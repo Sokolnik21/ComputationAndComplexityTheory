@@ -35,6 +35,7 @@ private:
     std::map<unsigned int, std::vector<Node>> graph;
     int optimal_steps;
     unsigned int start_vertex;
+    std::list<unsigned int> diamonds;
 
 public:
     Graph(DTBoard dtb) {
@@ -67,10 +68,18 @@ public:
         }
         optimal_steps = ie.get_optimal_steps();
         start_vertex = get_index_from_point(ie.get_starting_point());
+
+        std::list<Point> diamond_points = ie.get_diamond_cells();
+        for (it = diamond_points.begin(); it != diamond_points.end(); ++it) {
+            diamonds.push_back(get_index_from_point(*it));
+        }
     }
     std::map<unsigned int, std::vector<Node>> get_graph() {
         return graph;
-    };
+    }
+    std::list<unsigned int> get_diamonds() {
+        return diamonds;
+    }
     unsigned int get_optimal_steps() {
         return optimal_steps;
     }
