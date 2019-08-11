@@ -409,14 +409,22 @@ public:
         unsigned int max_iteration = graph.get_optimal_steps();
         unsigned int start_vertex = graph.get_starting_vertex();
 
-        result = naive_solver(result, diamonds, start_vertex, max_iteration);
+        result = naive_solver_loop_safe(result, diamonds, start_vertex, max_iteration);
         return result;
     }
 private:
-    std::string naive_solver(std::string result, std::list<unsigned int> diamonds, unsigned int start_vertex, unsigned int max_iteration) {
-        return go_to_next_vertex(result, diamonds, start_vertex, max_iteration);
+    std::string naive_solver_loop_safe(std::string result, std::list<unsigned int> diamonds, unsigned int start_vertex, unsigned int max_iteration) {
+        std::list<unsigned int> traversed_vertexes;
+        return go_to_next_vertex_loop_safe(result, diamonds, traversed_vertexes, start_vertex, max_iteration);
     }
-    std::string go_to_next_vertex(std::string result, std::list<unsigned int> curr_diamonds, unsigned int curr_vertex, unsigned int curr_iteration) {
+    std::string go_to_next_vertex_loop_safe(std::string result, std::list<unsigned int> curr_diamonds, std::list<unsigned int> traversed_vertexes, unsigned int curr_vertex, unsigned int curr_iteration) {
+        std::list<unsigned int>::iterator it_trav;
+        for(it_trav = traversed_vertexes.begin(); it_trav != traversed_vertexes.end(); ++it_trav) {
+            if(curr_vertex == (*it_trav)) {
+                return NOT_SOLVABLE;
+            }
+        }
+
         // dbg_list_diamonds(curr_diamonds);
         if(curr_diamonds.empty()) {
             return result;
@@ -433,7 +441,12 @@ private:
 
         for(it = curr_node.begin(); it != curr_node.end(); ++it) {
             new_diamonds = remove_on_path(curr_diamonds, *it);
-            tmp = go_to_next_vertex(result + std::to_string((*it).get_direction()), new_diamonds, (*it).get_index(), curr_iteration - 1);
+            std::list<unsigned int> new_traversed_vertexes = traversed_vertexes;
+            if(is_diamond_taken(new_diamonds, curr_diamonds)) {
+                new_traversed_vertexes.clear();
+            }
+            new_traversed_vertexes.push_back(curr_vertex);
+            tmp = go_to_next_vertex_loop_safe(result + std::to_string((*it).get_direction()), new_diamonds, new_traversed_vertexes, (*it).get_index(), curr_iteration - 1);
 
             if(tmp == NOT_SOLVABLE) {
                 continue;
@@ -442,6 +455,9 @@ private:
             }
         }
         return NOT_SOLVABLE;
+    }
+    bool is_diamond_taken(std::list<unsigned int> list1, std::list<unsigned int> list2) {
+        return list1.size() != list2.size();
     }
     std::list<unsigned int> remove_on_path(std::list<unsigned int> curr_diamonds_base, Node node) {
         std::list<unsigned int> diam_on_path = node.get_diamonds();
@@ -480,11 +496,13 @@ int main(int argc, char * argv[]) {
     #if IS_TIME_EXECUTION_COUNTER_ON
         auto start = std::chrono::high_resolution_clock::now();
     #endif
+
     std::cout << s.find_best_path();
+
     #if IS_TIME_EXECUTION_COUNTER_ON
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-        std::cout << "Execution time (in seconds): " << duration.count() << std::endl;
+        std::cout << "\nExecution time (in seconds): " << duration.count() << std::endl;
     #endif
 
     return 0;
