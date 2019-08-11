@@ -1,0 +1,13 @@
+michal@michal-Vostro-5468:~/Desktop/ComputationAndComplexityTheory$ ./OneFileOfCode.out test2 
+031314453254270550567005024126531413356571346
+Execution time (in seconds): 1
+michal@michal-Vostro-5468:~/Desktop/ComputationAndComplexityTheory$ ./OneFileOfCode.out test2 
+03131445325427055056700502416531413356571346
+Execution time (in seconds): 5
+michal@michal-Vostro-5468:~/Desktop/ComputationAndComplexityTheory$ ./OneFileOfCode.out test2 
+0313144532542705505670050316531413356571346
+Execution time (in seconds): 47
+michal@michal-Vostro-5468:~/Desktop/ComputationAndComplexityTheory$ ./OneFileOfCode.out test2 
+031314453254270550567012650331335657231546
+Execution time (in seconds): 814
+
