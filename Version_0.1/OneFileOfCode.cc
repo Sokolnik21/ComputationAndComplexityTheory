@@ -480,7 +480,7 @@ int main(int argc, char * argv[]) {
     #if IS_TIME_EXECUTION_COUNTER_ON
         auto start = std::chrono::high_resolution_clock::now();
     #endif
-    std::cout << s.find_best_path();
+    std::cout << s.find_best_path() << '\n';
     #if IS_TIME_EXECUTION_COUNTER_ON
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
