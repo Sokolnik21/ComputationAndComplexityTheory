@@ -235,7 +235,7 @@ private:
     }
     bool is_able_to_stop(Point ball, Direction direction) {
         char base_cell = dtb.cells.at(ball.get_row())[ball.get_col()];
-        if(DTBoard::is_cell_in_pattern(base_cell, {'O'})) {
+        if(DTBoard::is_cell_in_pattern(base_cell, {'O', '.'})) {
             return true;
         }
         else {
