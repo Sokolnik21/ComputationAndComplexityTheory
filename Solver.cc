@@ -1,6 +1,8 @@
 #include "Graph.cc"
 #include <algorithm>
 
+#define NOT_SOLVABLE "BRAK"
+
 #if IS_TIME_EXECUTION_COUNTER_ON
     #include <chrono>
 #endif
@@ -20,17 +22,20 @@ public:
         unsigned int max_iteration = graph.get_optimal_steps();
         unsigned int start_vertex = graph.get_starting_vertex();
 
-        result = go_to_next_vertex(result, diamonds, start_vertex, max_iteration);
+        result = naive_solver(result, diamonds, start_vertex, max_iteration);
         return result;
     }
 private:
+    std::string naive_solver(std::string result, std::list<unsigned int> diamonds, unsigned int start_vertex, unsigned int max_iteration) {
+        return go_to_next_vertex(result, diamonds, start_vertex, max_iteration);
+    }
     std::string go_to_next_vertex(std::string result, std::list<unsigned int> curr_diamonds, unsigned int curr_vertex, unsigned int curr_iteration) {
         // dbg_list_diamonds(curr_diamonds);
         if(curr_diamonds.empty()) {
             return result;
         }
         if(curr_iteration == 0) {
-            return "Unsolvable";
+            return NOT_SOLVABLE;
         }
 
         std::string tmp;
@@ -43,13 +48,13 @@ private:
             new_diamonds = remove_on_path(curr_diamonds, *it);
             tmp = go_to_next_vertex(result + std::to_string((*it).get_direction()), new_diamonds, (*it).get_index(), curr_iteration - 1);
 
-            if(tmp == "Unsolvable") {
+            if(tmp == NOT_SOLVABLE) {
                 continue;
             } else {
                 return tmp;
             }
         }
-        return "Unsolvable";
+        return NOT_SOLVABLE;
     }
     std::list<unsigned int> remove_on_path(std::list<unsigned int> curr_diamonds_base, Node node) {
         std::list<unsigned int> diam_on_path = node.get_diamonds();
